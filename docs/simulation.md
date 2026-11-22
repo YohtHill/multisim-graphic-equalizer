@@ -1,24 +1,24 @@
-# Equalizer Simulation Guide | 均衡器仿真指南
+# Circuit Design and Verification
 
-## Frequency bands | 频段划分
+[简体中文](simulation.zh-CN.md) · [Project home](../README.md)
 
-These are design breakpoints for the branch filters. Check the combined response in the actual circuit.
+## Simulation and hardware variants
 
-下表为各支路滤波器的设计分频点，合成响应以实际电路的仿真结果为准。
-
-| Design / 设计 | Nominal bands / 标称频段 |
+| Variant | What it demonstrates |
 | --- | --- |
-| Three-band / 三段 | <340 Hz, 340 Hz–3.4 kHz, >3.4 kHz |
-| Seven-band / 七段 | <100 Hz, 100–250 Hz, 250–630 Hz, 630 Hz–1.6 kHz, 1.6–4 kHz, 4–10 kHz, >10 kHz |
+| Seven-band Multisim | Cascaded active RC branches divided at 100 Hz, 250 Hz, 630 Hz, 1.6 kHz, 4 kHz and 10 kHz. |
+| Three-band Multisim | Bass below roughly 340 Hz, a mid band between roughly 340 Hz and 3.4 kHz, and treble above roughly 3.4 kHz. |
+| Three-band breadboard | Seven LM741/LM741CN op-amps on ±15 V rails. Input buffer U1, bass U2, mid U3/U4, treble U5, summer U6 and output buffer U7. |
+| SPICE reference circuit | Separate ideal controlled-source op-amp model. Its part list describes that reference, not the seven-op-amp physical implementation. |
 
-## Reproduce | 复现
+The course report uses 10 kΩ with 47 nF for the lower design corner and 10 kΩ with 4.7 nF for the upper. After each branch, a 50 kΩ potentiometer sends a variable fraction of the filtered signal into a 10 kΩ summing resistor. The feedback resistor on U6 is 10 kΩ.
 
-1. Open the desired .ms14 in NI Multisim 14. Use the configured supply rails and check the input AC magnitude. / 在 NI Multisim 14 中打开对应的 .ms14 工程，使用工程中的电源设置并检查输入源的交流幅值。
-2. Run **AC Analysis** with a 1 V AC input, decade sweep from 10 Hz to 100 kHz and 100 points per decade. Select the branch outputs and the final summing-stage output separately. / 将交流输入设为 1 V，按十倍频程从 10 Hz 扫至 100 kHz，每十倍频程 100 点。分别观察各频段输出及最终求和输出。
-3. In the three-band circuit, try 100 Hz, 1 kHz and 10 kHz. Bass, mid and treble should dominate respectively. If the waveform clips, reduce the input amplitude. / 三段电路可分别输入 100 Hz、1 kHz 和 10 kHz，预期依次由低、中、高频支路主导。若波形削顶，降低输入幅值。
+## How to check it
 
-## SPICE reference | SPICE 参考模型
+1. Open the .ms14 model in Multisim and apply a 1 V AC input. Use a decade sweep from 10 Hz to 100 kHz with 100 points per decade. Plot the individual branches and AUDIO_OUT separately.
+2. Check bass near 100 Hz, mid near 1 kHz and treble near 10 kHz. In the physical build, use the oscilloscope to compare branch output and recombined output while adjusting the corresponding potentiometer. Reduce the input if the waveform clips.
+3. For a simulator-independent check, open the [reference netlist](../3band_equalizer_multisim_netlist.cir) in LTspice and run its AC directive. A 401-point sweep was generated. The spare ideal-model rail nodes may emit warnings.
 
-The [three-band netlist](../3band_equalizer_multisim_netlist.cir) uses ideal controlled-source op-amps. Run its included AC directive in LTspice and probe BASS_OUT, MID_OUT, TREBLE_OUT and AUDIO_OUT. LTspice may warn about the unused rail nodes or the .PRINT directive. The AC output was generated successfully.
+![Bench oscilloscope capture near 1 kHz](mid-1khz-scope.jpg)
 
-[三段参考网表](../3band_equalizer_multisim_netlist.cir)以受控源实现理想运放。可在 LTspice 中运行自带的交流分析指令并查看 BASS_OUT、MID_OUT、TREBLE_OUT 与 AUDIO_OUT。LTspice 可能提示电源节点未参与模型或 .PRINT 指令不适用，交流数据已成功生成。
+The original capture displays approximately 996 Hz and 1.000 kHz with 0.86 Vpp and 1.04 Vpp on the two channels. The image is one bench observation. Component tolerance, bandwidth and complete response measurements are outside that capture.
