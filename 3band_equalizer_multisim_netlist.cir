@@ -1,0 +1,135 @@
+* 3-band audio equalizer behavioral SPICE netlist
+* Use this as a simulation/reference netlist.
+* Open the native circuit at Simu_File/Equalizer_3band.ms14.
+*
+* Frequency bands:
+* Bass:   low-pass below about 340 Hz
+* Mid:    high-pass 340 Hz + low-pass 3.4 kHz
+* Treble: high-pass above about 3.4 kHz
+
+VIN AUDIO_IN 0 AC 1 SIN(0 50m 1k)
+VCC VCC 0 DC 15
+VEE VEE 0 DC -15
+
+* Ideal opamp: pins are non-inverting, inverting, output.
+.SUBCKT IDEALOPAMP PLUS MINUS OUT
+EGAIN OUT 0 PLUS MINUS 1E6
+RIN PLUS MINUS 100MEG
+.ENDS IDEALOPAMP
+
+* U1 input buffer
+XU1 AUDIO_IN N_BUF N_BUF IDEALOPAMP
+
+* U2 preamp, non-inverting gain = 2
+XU2 N_BUF U2_NEG N_PRE IDEALOPAMP
+RU2G U2_NEG 0 10k
+RU2F N_PRE U2_NEG 10k
+
+* -------------------------
+* Bass branch
+* -------------------------
+XU3 N_PRE B_IN B_IN IDEALOPAMP
+
+* U4 Sallen-Key LPF, fc about 340 Hz
+R_BLP1_1 B_IN BLP1_X 10k
+R_BLP1_2 BLP1_X BLP1_Y 10k
+C_BLP1_1 BLP1_X B_LP1 47n
+C_BLP1_2 BLP1_Y 0 47n
+XU4 BLP1_Y B_LP1 B_LP1 IDEALOPAMP
+
+* U5 Sallen-Key LPF, fc about 340 Hz
+R_BLP2_1 B_LP1 BLP2_X 10k
+R_BLP2_2 BLP2_X BLP2_Y 10k
+C_BLP2_1 BLP2_X B_FILT 47n
+C_BLP2_2 BLP2_Y 0 47n
+XU5 BLP2_Y B_FILT B_FILT IDEALOPAMP
+
+* U6 bass gain, default feedback = 10k for unity magnitude
+RB_IN B_FILT B_GAIN_NEG 10k
+RB_FB B_GAIN B_GAIN_NEG 10k
+XU6 0 B_GAIN_NEG B_GAIN IDEALOPAMP
+
+* U7 bass output buffer
+XU7 B_GAIN BASS_OUT BASS_OUT IDEALOPAMP
+
+* -------------------------
+* Mid branch
+* -------------------------
+XU8 N_PRE M_IN M_IN IDEALOPAMP
+
+* U9 Sallen-Key HPF, fc about 340 Hz
+C_MHP1_1 M_IN MHP1_X 47n
+C_MHP1_2 MHP1_X MHP1_Y 47n
+R_MHP1_1 MHP1_X M_HP1 10k
+R_MHP1_2 MHP1_Y 0 10k
+XU9 MHP1_Y M_HP1 M_HP1 IDEALOPAMP
+
+* U10 Sallen-Key HPF, fc about 340 Hz
+C_MHP2_1 M_HP1 MHP2_X 47n
+C_MHP2_2 MHP2_X MHP2_Y 47n
+R_MHP2_1 MHP2_X M_HP2 10k
+R_MHP2_2 MHP2_Y 0 10k
+XU10 MHP2_Y M_HP2 M_HP2 IDEALOPAMP
+
+* U11 Sallen-Key LPF, fc about 3.4 kHz
+R_MLP1_1 M_HP2 MLP1_X 10k
+R_MLP1_2 MLP1_X MLP1_Y 10k
+C_MLP1_1 MLP1_X M_LP1 4.7n
+C_MLP1_2 MLP1_Y 0 4.7n
+XU11 MLP1_Y M_LP1 M_LP1 IDEALOPAMP
+
+* U12 Sallen-Key LPF, fc about 3.4 kHz
+R_MLP2_1 M_LP1 MLP2_X 10k
+R_MLP2_2 MLP2_X MLP2_Y 10k
+C_MLP2_1 MLP2_X M_FILT 4.7n
+C_MLP2_2 MLP2_Y 0 4.7n
+XU12 MLP2_Y M_FILT M_FILT IDEALOPAMP
+
+* U13 mid gain, default feedback = 10k for unity magnitude
+RM_IN M_FILT M_GAIN_NEG 10k
+RM_FB M_GAIN M_GAIN_NEG 10k
+XU13 0 M_GAIN_NEG M_GAIN IDEALOPAMP
+
+* U14 mid output buffer
+XU14 M_GAIN MID_OUT MID_OUT IDEALOPAMP
+
+* -------------------------
+* Treble branch
+* -------------------------
+XU15 N_PRE T_IN T_IN IDEALOPAMP
+
+* U16 Sallen-Key HPF, fc about 3.4 kHz
+C_THP1_1 T_IN THP1_X 4.7n
+C_THP1_2 THP1_X THP1_Y 4.7n
+R_THP1_1 THP1_X T_HP1 10k
+R_THP1_2 THP1_Y 0 10k
+XU16 THP1_Y T_HP1 T_HP1 IDEALOPAMP
+
+* U17 Sallen-Key HPF, fc about 3.4 kHz
+C_THP2_1 T_HP1 THP2_X 4.7n
+C_THP2_2 THP2_X THP2_Y 4.7n
+R_THP2_1 THP2_X T_FILT 10k
+R_THP2_2 THP2_Y 0 10k
+XU17 THP2_Y T_FILT T_FILT IDEALOPAMP
+
+* U18 treble gain, default feedback = 10k for unity magnitude
+RT_IN T_FILT T_GAIN_NEG 10k
+RT_FB TREBLE_OUT T_GAIN_NEG 10k
+XU18 0 T_GAIN_NEG TREBLE_OUT IDEALOPAMP
+
+* -------------------------
+* U19 inverting summing amplifier
+* -------------------------
+RSUM_B BASS_OUT SUM_NODE 10k
+RSUM_M MID_OUT SUM_NODE 10k
+RSUM_T TREBLE_OUT SUM_NODE 10k
+RSUM_FB SUM_OUT SUM_NODE 10k
+XU19 0 SUM_NODE SUM_OUT IDEALOPAMP
+
+* U20 output buffer
+XU20 SUM_OUT AUDIO_OUT AUDIO_OUT IDEALOPAMP
+RLOAD AUDIO_OUT 0 100k
+
+.AC DEC 100 10 100k
+.PRINT AC VDB(BASS_OUT) VDB(MID_OUT) VDB(TREBLE_OUT) VDB(AUDIO_OUT)
+.END

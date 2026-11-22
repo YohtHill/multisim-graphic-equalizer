@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="920" viewBox="0 0 1600 920">
+  <style>
+    text { font-family: Arial, sans-serif; fill: #111; }
+    .title { font-size: 30px; font-weight: 700; }
+    .label { font-size: 18px; font-weight: 700; }
+    .small { font-size: 15px; }
+    .box { fill: #fff; stroke: #111; stroke-width: 2; rx: 8; }
+    .branch { fill: #f7f8fa; stroke: #111; stroke-width: 2; rx: 8; }
+    .wire { stroke: #111; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    .rail { stroke: #555; stroke-width: 2; stroke-dasharray: 6 6; fill: none; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#111"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="50" class="title">20-LM741 3-Band Audio Equalizer - Multisim Reference Architecture</text>
+  <text x="40" y="82" class="small">Use +/-15 V rails. Add 100 nF decoupling from +15 V to GND and from -15 V to GND near each LM741.</text>
+
+  <rect x="40" y="160" width="130" height="70" class="box"/>
+  <text x="68" y="203" class="label">VIN</text>
+
+  <rect x="220" y="150" width="145" height="90" class="box"/>
+  <text x="262" y="185" class="label">U1</text>
+  <text x="250" y="211" class="small">Input buffer</text>
+
+  <rect x="415" y="150" width="145" height="90" class="box"/>
+  <text x="457" y="185" class="label">U2</text>
+  <text x="450" y="211" class="small">Preamp</text>
+  <text x="438" y="231" class="small">gain approx 2</text>
+
+  <path d="M170 195 H220" class="wire"/>
+  <path d="M365 195 H415" class="wire"/>
+  <path d="M560 195 H640 V245" class="wire"/>
+  <path d="M640 195 V465" class="rail"/>
+  <path d="M640 195 V685" class="rail"/>
+
+  <rect x="690" y="120" width="610" height="170" class="branch"/>
+  <text x="710" y="150" class="label">Bass branch: below about 340 Hz</text>
+  <rect x="720" y="175" width="90" height="60" class="box"/><text x="748" y="211" class="small">U3 buf</text>
+  <rect x="845" y="175" width="90" height="60" class="box"/><text x="864" y="200" class="small">U4 LPF</text><text x="865" y="220" class="small">340 Hz</text>
+  <rect x="970" y="175" width="90" height="60" class="box"/><text x="989" y="200" class="small">U5 LPF</text><text x="990" y="220" class="small">340 Hz</text>
+  <rect x="1095" y="175" width="90" height="60" class="box"/><text x="1111" y="200" class="small">U6 gain</text><text x="1110" y="220" class="small">pot</text>
+  <rect x="1220" y="175" width="65" height="60" class="box"/><text x="1231" y="211" class="small">U7</text>
+  <path d="M640 245 H720" class="wire"/><path d="M810 205 H845" class="wire"/><path d="M935 205 H970" class="wire"/><path d="M1060 205 H1095" class="wire"/><path d="M1185 205 H1220" class="wire"/>
+
+  <rect x="690" y="340" width="610" height="250" class="branch"/>
+  <text x="710" y="370" class="label">Mid branch: about 340 Hz to 3.4 kHz</text>
+  <rect x="720" y="405" width="70" height="60" class="box"/><text x="737" y="441" class="small">U8</text>
+  <rect x="815" y="405" width="82" height="60" class="box"/><text x="830" y="430" class="small">U9 HPF</text><text x="833" y="450" class="small">340 Hz</text>
+  <rect x="922" y="405" width="82" height="60" class="box"/><text x="934" y="430" class="small">U10 HPF</text><text x="940" y="450" class="small">340 Hz</text>
+  <rect x="1029" y="405" width="82" height="60" class="box"/><text x="1041" y="430" class="small">U11 LPF</text><text x="1037" y="450" class="small">3.4 kHz</text>
+  <rect x="1136" y="405" width="82" height="60" class="box"/><text x="1148" y="430" class="small">U12 LPF</text><text x="1144" y="450" class="small">3.4 kHz</text>
+  <rect x="915" y="500" width="90" height="60" class="box"/><text x="929" y="525" class="small">U13 gain</text><text x="940" y="545" class="small">pot</text>
+  <rect x="1040" y="500" width="70" height="60" class="box"/><text x="1058" y="536" class="small">U14</text>
+  <path d="M640 465 H720" class="wire"/><path d="M790 435 H815" class="wire"/><path d="M897 435 H922" class="wire"/><path d="M1004 435 H1029" class="wire"/><path d="M1111 435 H1136" class="wire"/><path d="M1218 435 H1245 V530 H1005" class="wire"/><path d="M915 530 H880 V435" class="wire"/><path d="M1005 530 H1040" class="wire"/>
+
+  <rect x="690" y="650" width="610" height="170" class="branch"/>
+  <text x="710" y="680" class="label">Treble branch: above about 3.4 kHz</text>
+  <rect x="720" y="705" width="90" height="60" class="box"/><text x="741" y="741" class="small">U15 buf</text>
+  <rect x="845" y="705" width="90" height="60" class="box"/><text x="857" y="730" class="small">U16 HPF</text><text x="853" y="750" class="small">3.4 kHz</text>
+  <rect x="970" y="705" width="90" height="60" class="box"/><text x="982" y="730" class="small">U17 HPF</text><text x="978" y="750" class="small">3.4 kHz</text>
+  <rect x="1095" y="705" width="90" height="60" class="box"/><text x="1107" y="730" class="small">U18 gain</text><text x="1118" y="750" class="small">pot</text>
+  <path d="M640 685 H720" class="wire"/><path d="M810 735 H845" class="wire"/><path d="M935 735 H970" class="wire"/><path d="M1060 735 H1095" class="wire"/>
+
+  <rect x="1380" y="390" width="120" height="90" class="box"/>
+  <text x="1412" y="425" class="label">U19</text>
+  <text x="1402" y="451" class="small">Inverting</text>
+  <text x="1400" y="471" class="small">summer</text>
+
+  <rect x="1380" y="560" width="120" height="80" class="box"/>
+  <text x="1412" y="595" class="label">U20</text>
+  <text x="1405" y="621" class="small">Output buf</text>
+
+  <path d="M1285 205 H1340 V415 H1380" class="wire"/>
+  <path d="M1110 530 H1340 V435 H1380" class="wire"/>
+  <path d="M1185 735 H1340 V455 H1380" class="wire"/>
+  <path d="M1440 480 V560" class="wire"/>
+  <path d="M1500 600 H1555" class="wire"/>
+  <text x="1510" y="585" class="label">AUDIO_OUT</text>
+
+  <text x="710" y="268" class="small">LPF 340 Hz stages use R1=R2=10 kΩ and C1=C2=47 nF.</text>
+  <text x="710" y="575" class="small">Mid HPF 340 Hz uses 47 nF; Mid LPF 3.4 kHz uses 4.7 nF.</text>
+  <text x="710" y="800" class="small">Treble HPF 3.4 kHz stages use R1=R2=10 kΩ and C1=C2=4.7 nF.</text>
+</svg>

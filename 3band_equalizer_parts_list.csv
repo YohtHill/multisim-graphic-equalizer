@@ -1,0 +1,13 @@
+Qty,Component,Value,Notes
+20,Operational amplifier,LM741 or LM741CN,"U1 to U20, powered from +15 V and -15 V"
+25,Resistor,10 kOhm,"Filter resistors, U2 preamp resistors, band gain input resistors, U19 summing resistors"
+3,Resistor,4.7 kOhm,"Series resistor in Bass/Mid/Treble feedback path"
+3,Potentiometer,50 kOhm,"Bass/Mid/Treble gain controls; use as rheostat in feedback path"
+1,Resistor,100 kOhm,"Output load for simulation"
+8,Capacitor,47 nF,"340 Hz LPF/HPF filter capacitors"
+8,Capacitor,4.7 nF,"3.4 kHz LPF/HPF filter capacitors"
+40,Capacitor,100 nF,"Power rail decoupling, two per LM741 recommended"
+1,AC/sine voltage source,50 mV to 100 mV transient / 1 V AC sweep,"Audio input"
+1,DC supply,+15 V,"Positive rail"
+1,DC supply,-15 V,"Negative rail"
+1,Ground,0 V,"Common reference"
